@@ -1,0 +1,1 @@
+require 'ltree_hierarchy'

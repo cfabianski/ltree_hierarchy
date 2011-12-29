@@ -1,0 +1,6 @@
+test: 
+  adapter:  postgresql
+  host:     localhost
+  database: ltree_hierarchy_test
+  username: developer
+  min_messages: warning
