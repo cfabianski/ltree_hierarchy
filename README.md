@@ -16,7 +16,7 @@ Getting started
 Follow these steps to apply to any ActiveRecord model:
 
 1. Install
- - Add to Gemfile: **gem 'ltree-hierarchy**
+ - Add to Gemfile: **gem 'ltree-hierarchy'**
  - Install required gems: **bundle install**
 2. Add parent_id (integer) and path (ltree) columns to your table.
 3. Add ltree hierarchy to your model
