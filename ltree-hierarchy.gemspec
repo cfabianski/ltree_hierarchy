@@ -1,10 +1,10 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require "ltree-hierarchy/version"
+require "ltree_hierarchy/version"
 
 Gem::Specification.new do |s|
   s.name        = "ltree-hierarchy"
-  s.version     = Ltree::hierarchy::VERSION
+  s.version     = Ltree::Hierarchy::VERSION
   s.authors     = ["Rob Worley"]
   s.email       = ["robert.worley@gmail.com"]
   s.homepage    = "http://github.com/robworley/ltree-hierarchy"
