@@ -13,6 +13,15 @@ module Ltree
       include InstanceMethods
     end
 
+    def at_depth(depth)
+      where(['nlevel(path) = ?', depth])
+    end
+
+    def leaves
+      where("id NOT IN(#{select('DISTINCT parent_id').to_sql})")
+    end
+    alias :leaf_nodes :leaves
+
     module InstanceMethods
       def prevent_circular_paths
         if parent && parent.path.split('.').include?(id.to_s)
@@ -43,16 +52,34 @@ module Ltree
       def cascade_path_change
         # Equivalent to:
         #  UPDATE whatever
-        #  SET    path = NEW.path || subpath(path, NLEVEL(OLD.path))
+        #  SET    path = NEW.path || subpath(path, nlevel(OLD.path))
         #  WHERE  path <@ OLD.path AND id != NEW.id;
         ltree_scope.update_all(
-          ['path = :new_path || subpath(path, NLEVEL(:old_path))', :new_path => path, :old_path => path_was],
+          ['path = :new_path || subpath(path, nlevel(:old_path))', :new_path => path, :old_path => path_was],
           ['path <@ :old_path AND id != :id', :old_path => path_was, :id => id]
         )
       end
 
       def root?
-        parent_id.nil?
+        if parent_id
+          false
+        else
+          parent.nil?
+        end
+      end
+
+      def leaf?
+        !children.any?
+      end
+
+      def depth # 1-based, for compatibility with ltree's nlevel().
+        if root?
+          1
+        elsif path
+          path.split('.').length
+        elsif parent
+          parent.depth + 1
+        end
       end
 
       def ancestors

@@ -60,6 +60,47 @@ class HierarchyTest < Test::Unit::TestCase
     assert_equal [root], TreeNode.roots.all
   end
 
+  def test_root_returns_true_on_root
+    root = TreeNode.create!
+    assert root.root?
+  end
+
+  def test_root_returns_false_on_non_root
+    root = TreeNode.create!
+    child = TreeNode.create!(:parent => root)
+    assert !child.root?
+  end
+
+  def test_leaf_returns_false_on_non_leaf
+    root = TreeNode.create!
+    child = TreeNode.create!(:parent => root)
+    assert !root.leaf?
+  end
+
+  def test_leaf_returns_true_on_leaf
+    root = TreeNode.create!
+    child = TreeNode.create!(:parent => root)
+    assert child.leaf?
+  end
+
+  def test_depth_on_root_returns_one
+    root = TreeNode.create!
+    assert_equal 1, root.depth
+  end
+
+  def test_depth_on_descendent
+    root = TreeNode.create!
+    child = TreeNode.create!(:parent => root)
+    assert_equal 2, child.depth
+  end
+
+  def test_depth_when_not_yet_persisted
+    root = TreeNode.new
+    child = TreeNode.new(:parent => root)
+    grandchild = TreeNode.new(:parent => child)
+    assert_equal 3, grandchild.depth
+  end
+
   def test_finds_ancestors
     root = TreeNode.create!
     child = TreeNode.create!(:parent => root)
@@ -130,5 +171,25 @@ class HierarchyTest < Test::Unit::TestCase
     grandchild1 = TreeNode.create!(:parent => child1)
 
     assert_equal [root, child1, child2, child3, grandchild1], root.and_descendents.order(:created_at).all
+  end
+
+  def test_finds_nodes_at_depth
+    root = TreeNode.create!
+    child1 = TreeNode.create!(:parent => root)
+    child2 = TreeNode.create!(:parent => root)
+    child3 = TreeNode.create!(:parent => root)
+    grandchild1 = TreeNode.create!(:parent => child1)
+    
+    assert_equal [grandchild1], root.descendents.at_depth(3)
+  end
+
+  def test_finds_leaf_nodes
+    root = TreeNode.create!
+    child1 = TreeNode.create!(:parent => root)
+    child2 = TreeNode.create!(:parent => root)
+    child3 = TreeNode.create!(:parent => root)
+    grandchild1 = TreeNode.create!(:parent => child1)
+
+    assert_equal [child2, child3, grandchild1], root.descendents.leaf_nodes.order(:created_at).all
   end
 end
