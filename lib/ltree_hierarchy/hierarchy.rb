@@ -59,33 +59,37 @@ module Ltree
         ltree_scope.where('path @> ? AND id != ?', path, id)
       end
 
-      def and_ancestors
+      def self_and_ancestors
         ltree_scope.where('path @> ?', path)
       end
+      alias :and_ancestors :self_and_ancestors
 
       def siblings
         ltree_scope.where('parent_id = ? AND id != ?', parent_id, id)
       end
 
-      def and_siblings
+      def self_and_siblings
         ltree_scope.where('parent_id = ?', parent_id)
       end
+      alias :and_siblings :self_and_siblings
 
       def descendents
         ltree_scope.where('path <@ ? AND id != ?', path, id)
       end
 
-      def and_descendents
+      def self_and_descendents
         ltree_scope.where('path <@ ?', path)
       end
+      alias :and_descendents :self_and_descendents
 
       def children
         ltree_scope.where('parent_id = ?', id)
       end
 
-      def and_children
+      def self_and_children
         ltree_scope.where('id = :id OR parent_id = :id', :id => id)
       end
+      alias :and_children :self_and_children
     end
   end
 end
