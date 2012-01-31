@@ -4,8 +4,12 @@ require 'test/unit'
 
 require 'ltree_hierarchy'
 
-class TreeNode < ActiveRecord::Base
+class DefaultTreeNode < ActiveRecord::Base
   has_ltree_hierarchy
+end
+
+class TreeNode < ActiveRecord::Base
+  has_ltree_hierarchy :fragment => :fragment, :parent_fragment => :parent_fragment, :path => :materialized_path
 end
 
 class HierarchyTest < Test::Unit::TestCase
@@ -20,17 +24,23 @@ class HierarchyTest < Test::Unit::TestCase
       TreeNode.connection.execute(File.read(ltree_script_path))
     end
 
-    TreeNode.connection.create_table(:tree_nodes, :force => true) do |t|
-      t.integer :parent_id
-      t.column  :path, 'ltree'
+    TreeNode.connection.create_table(:tree_nodes, :primary_key => :fragment, :force => true) do |t|
+      t.integer :parent_fragment
+      t.column  :materialized_path, 'ltree'
       t.timestamps
     end
+  end
+
+  def test_sensible_default_configuration
+    assert_equal DefaultTreeNode.ltree_fragment_column, :id
+    assert_equal DefaultTreeNode.ltree_parent_fragment_column, :parent_id
+    assert_equal DefaultTreeNode.ltree_path_column, :path
   end
 
   def test_sets_path_upon_creation
     root = TreeNode.create!
     child = TreeNode.create!(:parent => root)
-    assert_equal "#{root.id}.#{child.id}", child.path
+    assert_equal "#{root.fragment}.#{child.fragment}", child.materialized_path
   end
 
   def test_cascades_path_changes_through_descendents
@@ -43,7 +53,7 @@ class HierarchyTest < Test::Unit::TestCase
     uk.update_attributes!(:parent => emea)
 
     london.reload
-    assert_equal "#{acme_corp.id}.#{emea.id}.#{uk.id}.#{london.id}", london.path
+    assert_equal "#{acme_corp.fragment}.#{emea.fragment}.#{uk.fragment}.#{london.fragment}", london.materialized_path
   end
 
   def test_prevents_circular_references
@@ -51,7 +61,7 @@ class HierarchyTest < Test::Unit::TestCase
     child = TreeNode.create!(:parent => root)
     root.parent = child
     assert !root.save
-    assert_equal 'is invalid', root.errors[:parent_id].join
+    assert_equal 'is invalid', root.errors[:parent_fragment].join
   end
 
   def test_finds_roots
@@ -200,7 +210,7 @@ class HierarchyTest < Test::Unit::TestCase
     grandchild2 = TreeNode.create!(:parent => child1)
     greatgrandchild2 = TreeNode.create!(:parent => grandchild2)
 
-    assert_equal [child1.path], TreeNode.lowest_common_ancestor_paths(root.leaves.select(:path))
+    assert_equal [child1.materialized_path], TreeNode.lowest_common_ancestor_paths(root.leaves.select(:materialized_path))
   end
 
   def test_lowest_common_ancestor_paths_from_array
@@ -210,8 +220,8 @@ class HierarchyTest < Test::Unit::TestCase
     grandchild2 = TreeNode.create!(:parent => child1)
     greatgrandchild2 = TreeNode.create!(:parent => grandchild2)
 
-    paths = root.leaves.select(:path).map(&:path)
-    assert_equal [child1.path], TreeNode.lowest_common_ancestor_paths(paths)
+    paths = root.leaves.select(:materialized_path).map(&:materialized_path)
+    assert_equal [child1.materialized_path], TreeNode.lowest_common_ancestor_paths(paths)
   end
 
   def test_lowest_common_ancestors
@@ -221,6 +231,6 @@ class HierarchyTest < Test::Unit::TestCase
     grandchild2 = TreeNode.create!(:parent => child1)
     greatgrandchild2 = TreeNode.create!(:parent => grandchild2)
 
-    assert_equal [child1], TreeNode.lowest_common_ancestors(root.leaves.select(:path)).all
+    assert_equal [child1], TreeNode.lowest_common_ancestors(root.leaves.select(:materialized_path)).all
   end
 end

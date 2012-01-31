@@ -56,5 +56,4 @@ TODO
 ----
 
 - Support PG 9.1+ CREATE EXTENSION syntax.
-- Support configuration options for magic column names. parent_id and path are currently hard-coded.
 - Better error message for circular references. Don't neglect i18n.
