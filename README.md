@@ -36,21 +36,25 @@ The usual basic tree stuff. Use the following methods on any model instance:
 
 - parent
 - ancestors
-- and_ancestors
+- self_and_ancestors
 - siblings
-- and_siblings
+- self_and_siblings
 - children
-- and_children
+- self_and_children
 - descendents
-- and_descendents
+- self_and_descendents
+- leaves
 
-Use the **roots** method on your model class to find all root nodes.
+Useful class methods:
+
+- roots
+- leaves
+- at_depth(n)
+- lowest_common_ancestors(scope)
 
 TODO
 ----
 
 - Support PG 9.1+ CREATE EXTENSION syntax.
-- Expose further ltree capabilities.
-- Add scopes for selection by depth, methods for checking children etc.
 - Support configuration options for magic column names. parent_id and path are currently hard-coded.
 - Better error message for circular references. Don't neglect i18n.

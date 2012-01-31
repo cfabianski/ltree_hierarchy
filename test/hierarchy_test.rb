@@ -183,13 +183,44 @@ class HierarchyTest < Test::Unit::TestCase
     assert_equal [grandchild1], root.descendents.at_depth(3)
   end
 
-  def test_finds_leaf_nodes
+  def test_finds_leaves
     root = TreeNode.create!
     child1 = TreeNode.create!(:parent => root)
     child2 = TreeNode.create!(:parent => root)
     child3 = TreeNode.create!(:parent => root)
     grandchild1 = TreeNode.create!(:parent => child1)
 
-    assert_equal [child2, child3, grandchild1], root.descendents.leaf_nodes.order(:created_at).all
+    assert_equal [child2, child3, grandchild1], root.descendents.leaves.order(:created_at).all
+  end
+
+  def test_lowest_common_ancestor_paths
+    root = TreeNode.create!
+    child1 = TreeNode.create!(:parent => root)
+    grandchild1 = TreeNode.create!(:parent => child1)
+    grandchild2 = TreeNode.create!(:parent => child1)
+    greatgrandchild2 = TreeNode.create!(:parent => grandchild2)
+
+    assert_equal [child1.path], TreeNode.lowest_common_ancestor_paths(root.leaves.select(:path))
+  end
+
+  def test_lowest_common_ancestor_paths_from_array
+    root = TreeNode.create!
+    child1 = TreeNode.create!(:parent => root)
+    grandchild1 = TreeNode.create!(:parent => child1)
+    grandchild2 = TreeNode.create!(:parent => child1)
+    greatgrandchild2 = TreeNode.create!(:parent => grandchild2)
+
+    paths = root.leaves.select(:path).map(&:path)
+    assert_equal [child1.path], TreeNode.lowest_common_ancestor_paths(paths)
+  end
+
+  def test_lowest_common_ancestors
+    root = TreeNode.create!
+    child1 = TreeNode.create!(:parent => root)
+    grandchild1 = TreeNode.create!(:parent => child1)
+    grandchild2 = TreeNode.create!(:parent => child1)
+    greatgrandchild2 = TreeNode.create!(:parent => grandchild2)
+
+    assert_equal [child1], TreeNode.lowest_common_ancestors(root.leaves.select(:path)).all
   end
 end

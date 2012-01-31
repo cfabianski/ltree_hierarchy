@@ -20,7 +20,21 @@ module Ltree
     def leaves
       where("id NOT IN(#{select('DISTINCT parent_id').to_sql})")
     end
-    alias :leaf_nodes :leaves
+
+    def lowest_common_ancestor_paths(paths)
+      sql = if paths.respond_to?(:to_sql)
+        "SELECT lca(array(#{paths.to_sql}))"
+      else
+        return [] if paths.empty?
+        safe_paths = paths.map { |p| "#{connection.quote(p)}::ltree" }
+        "SELECT lca(ARRAY[#{safe_paths.join(', ')}])"
+      end
+      connection.select_values(sql)
+    end
+
+    def lowest_common_ancestors(paths)
+      where(:path => lowest_common_ancestor_paths(paths))
+    end
 
     module InstanceMethods
       def prevent_circular_paths
@@ -117,6 +131,10 @@ module Ltree
         ltree_scope.where('id = :id OR parent_id = :id', :id => id)
       end
       alias :and_children :self_and_children
+
+      def leaves
+        descendents.leaves
+      end
     end
   end
 end
