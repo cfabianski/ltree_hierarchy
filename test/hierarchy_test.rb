@@ -19,9 +19,14 @@ class HierarchyTest < Test::Unit::TestCase
     TreeNode.establish_connection(db_config)
 
     unless TreeNode.connection.select_value("SELECT proname FROM pg_proc WHERE proname = 'nlevel'")
-      pg_sharedir = `pg_config --sharedir`.strip
-      ltree_script_path = File.join(pg_sharedir, "contrib", "ltree.sql")
-      TreeNode.connection.execute(File.read(ltree_script_path))
+      pgversion = TreeNode.connection.send(:postgresql_version)
+      if pgversion < 90100
+        pg_sharedir = `pg_config --sharedir`.strip
+        ltree_script_path = File.join(pg_sharedir, "contrib", "ltree.sql")
+        TreeNode.connection.execute(File.read(ltree_script_path))
+      else
+        TreeNode.connection.execute("CREATE EXTENSION ltree")
+      end
     end
 
     TreeNode.connection.create_table(:tree_nodes, :primary_key => :fragment, :force => true) do |t|
