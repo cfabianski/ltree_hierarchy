@@ -2,5 +2,5 @@ test:
   adapter:  postgresql
   host:     localhost
   database: ltree_hierarchy_test
-  username: developer
+  username: postgres
   min_messages: warning
