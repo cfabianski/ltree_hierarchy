@@ -3,6 +3,8 @@ LTree Hierarchy
 
 A simplistic gem that allows ActiveRecord models to be organized in a tree or hierarchy. It uses a materialized path implementation based around PostgreSQL's [ltree](http://www.postgresql.org/docs/current/static/ltree.html) data type, associated functions and operators.
 
+[![Build Status](https://api.travis-ci.org/robworley/ltree_hierarchy.png)](https://travis-ci.org/robworley/ltree_hierarchy)
+
 Why might you want to use it?
 -----------------------------
 
@@ -55,5 +57,4 @@ Useful class methods:
 TODO
 ----
 
-- Support PG 9.1+ CREATE EXTENSION syntax.
 - Better error message for circular references. Don't neglect i18n.
