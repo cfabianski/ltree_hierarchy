@@ -17,12 +17,7 @@ Gem::Specification.new do |s|
   s.platform          = Gem::Platform::RUBY
   s.require_paths     = ["lib"]
 
-  if ENV['RAILS_3_1']
-    s.add_dependency 'activerecord', '~> 3.1.0'
-  else
-    s.add_dependency 'activerecord', '~> 3.2.0'
-  end
-
+  s.add_dependency 'activerecord', ENV["ACTIVE_RECORD_VERSION"]
   s.add_dependency 'pg'
 
   s.add_development_dependency 'rake'

@@ -1,19 +1,16 @@
-LTree Hierarchy
-===============
+# ltree_hierarchy
 
 A simplistic gem that allows ActiveRecord models to be organized in a tree or hierarchy. It uses a materialized path implementation based around PostgreSQL's [ltree](http://www.postgresql.org/docs/current/static/ltree.html) data type, associated functions and operators.
 
 [![Build Status](https://api.travis-ci.org/robworley/ltree_hierarchy.png)](https://travis-ci.org/robworley/ltree_hierarchy)
 
-Why might you want to use it?
------------------------------
+## Why might you want to use it?
 
 - You want to be able to construct optimized hierarchical queries with ease, both from Ruby AND raw SQL.
 - You want to be able to compose complex arel expressions from pre-defined building blocks.
 - You prefer PostgreSQL over other relational DBs.
 
-Getting started
----------------
+## Getting started
 
 Follow these steps to apply to any ActiveRecord model:
 
@@ -24,15 +21,13 @@ Follow these steps to apply to any ActiveRecord model:
 3. Add ltree hierarchy to your model
    - Add to app/models/[model].rb: has_ltree_hierarchy
 
-Organizing records into a tree
-------------------------------
+## Organizing records into a tree
 
 Set the parent association or parent_id:
 
 Node.create! :name => 'New York', :parent => Node.create!(:name => 'USA')
 
-Navigating the tree
--------------------
+## Navigating the tree
 
 The usual basic tree stuff. Use the following methods on any model instance:
 
@@ -54,7 +49,6 @@ Useful class methods:
 - at_depth(n)
 - lowest_common_ancestors(scope)
 
-TODO
-----
+## TODO
 
 - Better error message for circular references. Don't neglect i18n.

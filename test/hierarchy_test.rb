@@ -16,7 +16,7 @@ class HierarchyTest < Test::Unit::TestCase
   def setup
     db_config = YAML.load(File.open(File.join(File.dirname(__FILE__), 'database.yml')).read)['test']
 
-    TreeNode.establish_connection(db_config)
+    ActiveRecord::Base.establish_connection(db_config)
 
     unless TreeNode.connection.select_value("SELECT proname FROM pg_proc WHERE proname = 'nlevel'")
       pgversion = TreeNode.connection.send(:postgresql_version)
@@ -72,7 +72,7 @@ class HierarchyTest < Test::Unit::TestCase
   def test_finds_roots
     root = TreeNode.create!
     child = TreeNode.create!(:parent => root)
-    assert_equal [root], TreeNode.roots.all
+    assert_equal [root], TreeNode.roots.to_a
   end
 
   def test_root_returns_true_on_root
@@ -119,7 +119,7 @@ class HierarchyTest < Test::Unit::TestCase
   def test_finds_ancestors
     root = TreeNode.create!
     child = TreeNode.create!(:parent => root)
-    assert_equal [root], child.ancestors.all
+    assert_equal [root], child.ancestors.to_a
   end
 
   def test_finds_self_and_ancestors
@@ -135,7 +135,7 @@ class HierarchyTest < Test::Unit::TestCase
     child3 = TreeNode.create!(:parent => root)
     grandchild1 = TreeNode.create!(:parent => child1)
 
-    assert_equal [child2, child3], child1.siblings.order(:created_at).all
+    assert_equal [child2, child3], child1.siblings.order(:created_at).to_a
   end
 
   def test_finds_self_and_siblings
@@ -145,7 +145,7 @@ class HierarchyTest < Test::Unit::TestCase
     child3 = TreeNode.create!(:parent => root)
     grandchild1 = TreeNode.create!(:parent => child1)
 
-    assert_equal [child1, child2, child3], child1.and_siblings.order(:created_at).all
+    assert_equal [child1, child2, child3], child1.and_siblings.order(:created_at).to_a
   end
 
   def test_finds_children
@@ -155,7 +155,7 @@ class HierarchyTest < Test::Unit::TestCase
     child3 = TreeNode.create!(:parent => root)
     grandchild1 = TreeNode.create!(:parent => child1)
 
-    assert_equal [child1, child2, child3], root.children.order(:created_at).all
+    assert_equal [child1, child2, child3], root.children.order(:created_at).to_a
   end
 
   def test_finds_self_and_children
@@ -165,7 +165,7 @@ class HierarchyTest < Test::Unit::TestCase
     child3 = TreeNode.create!(:parent => root)
     grandchild1 = TreeNode.create!(:parent => child1)
 
-    assert_equal [root, child1, child2, child3], root.and_children.order(:created_at).all
+    assert_equal [root, child1, child2, child3], root.and_children.order(:created_at).to_a
   end
 
   def test_finds_descendents
@@ -175,7 +175,7 @@ class HierarchyTest < Test::Unit::TestCase
     child3 = TreeNode.create!(:parent => root)
     grandchild1 = TreeNode.create!(:parent => child1)
 
-    assert_equal [child1, child2, child3, grandchild1], root.descendents.order(:created_at).all
+    assert_equal [child1, child2, child3, grandchild1], root.descendents.order(:created_at).to_a
   end
 
   def test_finds_self_and_descendents
@@ -185,7 +185,7 @@ class HierarchyTest < Test::Unit::TestCase
     child3 = TreeNode.create!(:parent => root)
     grandchild1 = TreeNode.create!(:parent => child1)
 
-    assert_equal [root, child1, child2, child3, grandchild1], root.and_descendents.order(:created_at).all
+    assert_equal [root, child1, child2, child3, grandchild1], root.and_descendents.order(:created_at).to_a
   end
 
   def test_finds_nodes_at_depth
@@ -205,7 +205,7 @@ class HierarchyTest < Test::Unit::TestCase
     child3 = TreeNode.create!(:parent => root)
     grandchild1 = TreeNode.create!(:parent => child1)
 
-    assert_equal [child2, child3, grandchild1], root.descendents.leaves.order(:created_at).all
+    assert_equal [child2, child3, grandchild1], root.descendents.leaves.order(:created_at).to_a
   end
 
   def test_lowest_common_ancestor_paths
@@ -236,6 +236,6 @@ class HierarchyTest < Test::Unit::TestCase
     grandchild2 = TreeNode.create!(:parent => child1)
     greatgrandchild2 = TreeNode.create!(:parent => grandchild2)
 
-    assert_equal [child1], TreeNode.lowest_common_ancestors(root.leaves.select(:materialized_path)).all
+    assert_equal [child1], TreeNode.lowest_common_ancestors(root.leaves.select(:materialized_path)).to_a
   end
 end
