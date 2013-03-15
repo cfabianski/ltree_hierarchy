@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.version           = Ltree::Hierarchy::VERSION
   s.authors           = ["Rob Worley"]
   s.email             = ["robert.worley@gmail.com"]
-  s.homepage          = "http://github.com/robworley/ltree_hierarchy"
+  s.homepage          = "https://github.com/robworley/ltree_hierarchy"
   s.summary           = "Organize ActiveRecord models into a tree using PostgreSQL's ltree datatype"
   s.description       = "Organizes ActiveRecord models into a tree/hierarchy using a materialized path implementation based around PostgreSQL's ltree datatype. ltree's operators ensure that queries are fast and easily understood."
 
