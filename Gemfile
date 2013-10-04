@@ -1,8 +1,3 @@
-source "http://rubygems.org"
+source "https://rubygems.org"
 
-if ENV["EDGE_RAILS"]
-  gem 'pg'
-  gem 'rails', :git => 'git://github.com/rails/rails'
-else
-  gemspec
-end
+gemspec

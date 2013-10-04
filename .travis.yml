@@ -1,11 +1,12 @@
 language: ruby
 before_script:
   - psql -c 'CREATE DATABASE ltree_hierarchy_test;' -U postgres
-env:
-  - RAILS_3_1=true
-  - RAILS_3_2=true
 rvm:
   - 1.9.3
-  - 1.9.2
+  - 2.0.0
   - rbx-19mode
-  - ruby-head
+  - jruby-19mode
+gemfile:
+  - test/gemfiles/Gemfile.rails-3.1.x
+  - test/gemfiles/Gemfile.rails-3.2.x
+  - test/gemfiles/Gemfile.rails-4.0.x
