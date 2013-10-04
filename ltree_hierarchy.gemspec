@@ -15,6 +15,7 @@ Gem::Specification.new do |s|
 
   s.files             = Dir['{lib/**/*,[A-Z]*}']
   s.platform          = Gem::Platform::RUBY
+  s.license           = 'MIT'
   s.require_paths     = ["lib"]
 
   if ENV['RAILS_3_1']
