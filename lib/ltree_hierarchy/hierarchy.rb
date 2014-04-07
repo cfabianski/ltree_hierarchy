@@ -146,6 +146,10 @@ module Ltree
         end
       end
 
+      def root
+        ltree_scope.where("#{ltree_path_column} = subpath(?, 0, 1)", ltree_path)
+      end
+
       def ancestors
         ltree_scope.where("#{ltree_path_column} @> ? AND #{ltree_fragment_column} != ?", ltree_path, ltree_fragment)
       end

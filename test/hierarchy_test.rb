@@ -80,6 +80,14 @@ class HierarchyTest < MiniTest::Unit::TestCase
     assert root.root?
   end
 
+  def test_root_returns_first_item
+    root = TreeNode.create!
+    child1 = TreeNode.create!(:parent => root)
+    child2 = TreeNode.create!(:parent => child1)
+
+    assert_equal root, child2.root.first
+  end
+
   def test_root_returns_false_on_non_root
     root = TreeNode.create!
     child = TreeNode.create!(:parent => root)
