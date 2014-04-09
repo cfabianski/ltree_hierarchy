@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'active_record'
-require 'test/unit'
+require 'minitest/autorun'
 
 require 'ltree_hierarchy'
 
@@ -12,7 +12,7 @@ class TreeNode < ActiveRecord::Base
   has_ltree_hierarchy :fragment => :fragment, :parent_fragment => :parent_fragment, :path => :materialized_path
 end
 
-class HierarchyTest < Test::Unit::TestCase
+class HierarchyTest < MiniTest::Unit::TestCase
   def setup
     db_config = YAML.load(File.open(File.join(File.dirname(__FILE__), 'database.yml')).read)['test']
 
