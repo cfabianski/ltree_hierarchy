@@ -133,7 +133,7 @@ module Ltree
       end
 
       def leaf?
-        !children.any?
+        !children.exists?
       end
 
       def depth # 1-based, for compatibility with ltree's nlevel().
