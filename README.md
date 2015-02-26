@@ -1,8 +1,6 @@
-# ltree_hierarchy
+# Ltree Hierarchy
 
 A simplistic gem that allows ActiveRecord models to be organized in a tree or hierarchy. It uses a materialized path implementation based around PostgreSQL's [ltree](http://www.postgresql.org/docs/current/static/ltree.html) data type, associated functions and operators.
-
-[![Build Status](https://api.travis-ci.org/robworley/ltree_hierarchy.png)](https://travis-ci.org/robworley/ltree_hierarchy)
 
 ## Why might you want to use it?
 
@@ -10,45 +8,77 @@ A simplistic gem that allows ActiveRecord models to be organized in a tree or hi
 - You want to be able to compose complex arel expressions from pre-defined building blocks.
 - You prefer PostgreSQL over other relational DBs.
 
-## Getting started
+## Installation
 
-Follow these steps to apply to any ActiveRecord model:
+Add this line to your application's Gemfile:
 
-1. Install
- - Add to Gemfile: **gem 'ltree_hierarchy', :git => 'git://github.com/robworley/ltree_hierarchy.git'**
- - Install required gems: **bundle install**
-2. Add parent_id (integer) and path (ltree) columns to your table.
-3. Add ltree hierarchy to your model
-   - Add to app/models/[model].rb: has_ltree_hierarchy
+    gem 'ltree_hierarchy'
 
-## Organizing records into a tree
+And then execute:
 
-Set the parent association or parent_id:
+    $ bundle
 
-Node.create! :name => 'New York', :parent => Node.create!(:name => 'USA')
+Add ltree extension to PostgreSQL:
 
-## Navigating the tree
+    $ psql -U postgres -d my_database
+    -> CREATE EXTENSION IF NOT EXISTS ltree;
 
-The usual basic tree stuff. Use the following methods on any model instance:
+Update your table:
 
-- parent
-- ancestors
-- self_and_ancestors
-- siblings
-- self_and_siblings
-- children
-- self_and_children
-- descendents
-- self_and_descendents
-- leaves
+``` ruby
+class AddLtreeToLocations < ActiveRecord::Migration
+  def self.up
+    add_column :locations, :parent_id, :integer
+    add_column :locations, :path, :ltree
 
-Useful class methods:
+    add_index :locations, :parent_id
+  end
 
-- roots
-- leaves
-- at_depth(n)
-- lowest_common_ancestors(scope)
+  def self.down
+    remove_index :locations, :parent_id
+    remove_column :locations, :parent_id
+    remove_column :locations, :path
+  end
+end
+```
+
+Run migrations:
+
+    $ bundle exec rake db:migrate
+
+## Usage
+
+``` ruby
+  class Location < ActiveRecord::Base
+    has_ltree_hierarchy
+  end
+
+  root     = Location.create!(name: 'UK')
+  child    = Location.create!(name: 'London', parent: root)
+  subchild = Location.create!(name: 'Hackney', parent: child)
+
+  root.parent   # => nil
+  child.parent # => root
+  root.children # => [child]
+  root.children.first.children.first # => subchild
+```
+
+- `.roots`
+- `.leaves`
+- `.at_depth(n)`
+- `.lowest_common_ancestors(scope)`
+- `#parent`
+- `#ancestors`
+- `#self_and_ancestors`
+- `#siblings`
+- `#self_and_siblings`
+- `#children`
+- `#self_and_children`
+- `#descendents`
+- `#self_and_descendents`
+- `#leaves`
 
 ## TODO
 
-- Better error message for circular references. Don't neglect i18n.
+- [ ] Better error message for circular references.
+- [ ] Don't neglect i18n.
