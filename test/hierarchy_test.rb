@@ -29,10 +29,10 @@ class HierarchyTest < MiniTest::Unit::TestCase
       end
     end
 
-    TreeNode.connection.create_table(:tree_nodes, :primary_key => :fragment, :force => true) do |t|
+    TreeNode.connection.create_table(:tree_nodes, primary_key: :fragment, force: true) do |t|
       t.integer :parent_fragment
-      t.column  :materialized_path, 'ltree'
-      t.timestamps
+      t.column :materialized_path, "ltree"
+      t.timestamps null: false
     end
   end
 
