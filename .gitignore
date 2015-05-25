@@ -3,3 +3,4 @@
 Gemfile.lock
 pkg/*
 test/coverage
+test/database.yml
