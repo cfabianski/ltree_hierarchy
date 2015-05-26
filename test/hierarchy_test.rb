@@ -85,7 +85,7 @@ class HierarchyTest < MiniTest::Unit::TestCase
     child1 = TreeNode.create!(:parent => root)
     child2 = TreeNode.create!(:parent => child1)
 
-    assert_equal root, child2.root.first
+    assert_equal root, child2.root
   end
 
   def test_root_returns_false_on_non_root
@@ -202,7 +202,7 @@ class HierarchyTest < MiniTest::Unit::TestCase
     child2 = TreeNode.create!(:parent => root)
     child3 = TreeNode.create!(:parent => root)
     grandchild1 = TreeNode.create!(:parent => child1)
-    
+
     assert_equal [grandchild1], root.descendents.at_depth(3)
   end
 

@@ -147,7 +147,7 @@ module Ltree
       end
 
       def root
-        ltree_scope.where("#{ltree_path_column} = subpath(?, 0, 1)", ltree_path)
+        ltree_scope.where("#{ltree_path_column} = subpath(?, 0, 1)", ltree_path).first
       end
 
       def ancestors
