@@ -61,6 +61,7 @@ Run migrations:
   child.parent # => root
   root.children # => [child]
   root.children.first.children.first # => subchild
+  subchild.root # => root
 ```
 
 - `.roots`
