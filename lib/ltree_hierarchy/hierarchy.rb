@@ -34,7 +34,9 @@ module Ltree
     end
 
     def leaves
-      subquery = select("DISTINCT #{ltree_parent_fragment_column}")
+      subquery = where("#{ltree_parent_fragment_column} IS NOT NULL")
+        .select("DISTINCT #{ltree_parent_fragment_column}")
+
       where("#{ltree_fragment_column} NOT IN(#{subquery.to_sql})")
     end
 
