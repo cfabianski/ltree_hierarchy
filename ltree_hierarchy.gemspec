@@ -5,9 +5,9 @@ require "ltree_hierarchy/version"
 Gem::Specification.new do |s|
   s.name = "ltree_hierarchy"
   s.version = Ltree::Hierarchy::VERSION
-  s.authors = ["Rob Worley"]
-  s.email = ["robert.worley@gmail.com"]
-  s.homepage = "https://github.com/robworley/ltree_hierarchy"
+  s.authors = ["Rob Worley", "Leadformance"]
+  s.email = ["dev@leadformance.com"]
+  s.homepage = "https://github.com/Leadformance/ltree_hierarchy"
   s.summary = "Organize ActiveRecord models into a tree using PostgreSQL's ltree datatype"
   s.description = "Organizes ActiveRecord models into a tree/hierarchy using a materialized path implementation based around PostgreSQL's ltree datatype. ltree's operators ensure that queries are fast and easily understood."
 
