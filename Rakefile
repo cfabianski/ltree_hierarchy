@@ -1,12 +1,12 @@
-require 'rake'
-require 'rake/testtask'
+require "rake"
+require "rake/testtask"
 
-desc 'Default: run unit tests.'
-task :default => :test
+desc "Default: run unit tests."
+task default: :test
 
-desc 'Test the ltree_hierarchy plugin.'
+desc "Test the ltree_hierarchy plugin."
 Rake::TestTask.new(:test) do |t|
-  t.libs << 'lib'
-  t.pattern = 'test/**/*_test.rb'
+  t.libs << "lib"
+  t.pattern = "test/**/*_test.rb"
   t.verbose = true
 end
