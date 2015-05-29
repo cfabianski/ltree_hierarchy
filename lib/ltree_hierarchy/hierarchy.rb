@@ -2,35 +2,35 @@ module Ltree
   module Hierarchy
     def has_ltree_hierarchy(options = {})
       options = {
-        :fragment => :id,
-        :parent_fragment => :parent_id,
-        :path => :path
+        fragment: :id,
+        parent_fragment: :parent_id,
+        path: :path
       }.merge(options)
 
       options.assert_valid_keys(:fragment, :parent_fragment, :path)
 
       cattr_accessor :ltree_fragment_column, :ltree_parent_fragment_column, :ltree_path_column
 
-      self.ltree_fragment_column        = options[:fragment]
+      self.ltree_fragment_column = options[:fragment]
       self.ltree_parent_fragment_column = options[:parent_fragment]
-      self.ltree_path_column            = options[:path]
+      self.ltree_path_column = options[:path]
 
-      belongs_to :parent, :class_name => self.name, :foreign_key => self.ltree_parent_fragment_column
+      belongs_to :parent, class_name: name, foreign_key: ltree_parent_fragment_column
 
-      validate :prevent_circular_paths, :if => :ltree_parent_fragment_changed?
+      validate :prevent_circular_paths, if: :ltree_parent_fragment_changed?
 
-      after_create  :commit_path
-      before_update :assign_path, :cascade_path_change, :if => :ltree_parent_fragment_changed?
+      after_create :commit_path
+      before_update :assign_path, :cascade_path_change, if: :ltree_parent_fragment_changed?
 
       include InstanceMethods
     end
 
     def roots
-      where(self.ltree_parent_fragment_column => nil)
+      where(ltree_parent_fragment_column => nil)
     end
 
     def at_depth(depth)
-      where(["nlevel(#{ltree_path_column}) = ?", depth])
+      where(["NLEVEL(#{ltree_path_column}) = ?", depth])
     end
 
     def leaves
@@ -40,11 +40,11 @@ module Ltree
 
     def lowest_common_ancestor_paths(paths)
       sql = if paths.respond_to?(:to_sql)
-        "SELECT lca(array(#{paths.to_sql}))"
+        "SELECT LCA(ARRAY(#{paths.to_sql}))"
       else
         return [] if paths.empty?
         safe_paths = paths.map { |p| "#{connection.quote(p)}::ltree" }
-        "SELECT lca(ARRAY[#{safe_paths.join(', ')}])"
+        "SELECT LCA(ARRAY[#{safe_paths.join(", ")}])"
       end
       connection.select_values(sql)
     end
@@ -63,7 +63,7 @@ module Ltree
       end
 
       def ltree_fragment
-        send(self.ltree_fragment_column)
+        send(ltree_fragment_column)
       end
 
       def ltree_parent_fragment_column
@@ -91,7 +91,7 @@ module Ltree
       end
 
       def prevent_circular_paths
-        if parent && parent.ltree_path.split('.').include?(ltree_fragment.to_s)
+        if parent && parent.ltree_path.split(".").include?(ltree_fragment.to_s)
           errors.add(ltree_parent_fragment_column, :invalid)
         end
       end
@@ -118,14 +118,14 @@ module Ltree
         #  SET    path = NEW.path || subpath(path, nlevel(OLD.path))
         #  WHERE  path <@ OLD.path AND id != NEW.id;
         ltree_scope.where(
-          ["#{ltree_path_column} <@ :old_path AND #{ltree_fragment_column} != :id", :old_path => ltree_path_was, :id => ltree_fragment]
+          ["#{ltree_path_column} <@ :old_path AND #{ltree_fragment_column} != :id", old_path: ltree_path_was, id: ltree_fragment]
         ).update_all(
-          ["#{ltree_path_column} = :new_path || subpath(#{ltree_path_column}, nlevel(:old_path))", :new_path => ltree_path, :old_path => ltree_path_was]
+          ["#{ltree_path_column} = :new_path || subpath(#{ltree_path_column}, nlevel(:old_path))", new_path: ltree_path, old_path: ltree_path_was]
         )
       end
 
       def root?
-        if self.ltree_parent_fragment
+        if ltree_parent_fragment
           false
         else
           parent.nil?
@@ -136,18 +136,18 @@ module Ltree
         !children.exists?
       end
 
-      def depth # 1-based, for compatibility with ltree's nlevel().
+      def depth # 1-based, for compatibility with ltree's NLEVEL().
         if root?
           1
         elsif ltree_path
-          ltree_path.split('.').length
+          ltree_path.split(".").length
         elsif parent
           parent.depth + 1
         end
       end
 
       def root
-        ltree_scope.where("#{ltree_path_column} = subpath(?, 0, 1)", ltree_path).first
+        ltree_scope.where("#{ltree_path_column} = SUBPATH(?, 0, 1)", ltree_path).first
       end
 
       def ancestors
@@ -160,7 +160,10 @@ module Ltree
       alias :and_ancestors :self_and_ancestors
 
       def siblings
-        ltree_scope.where("#{ltree_parent_fragment_column} = ? AND #{ltree_fragment_column} != ?", ltree_parent_fragment, ltree_fragment)
+        ltree_scope.where(
+          "#{ltree_parent_fragment_column} = ? AND #{ltree_fragment_column} != ?",
+          ltree_parent_fragment, ltree_fragment
+        )
       end
 
       def self_and_siblings
@@ -182,7 +185,7 @@ module Ltree
       end
 
       def self_and_children
-        ltree_scope.where("#{ltree_fragment_column} = :id OR #{ltree_parent_fragment_column} = :id", :id => ltree_fragment)
+        ltree_scope.where("#{ltree_fragment_column} = :id OR #{ltree_parent_fragment_column} = :id", id: ltree_fragment)
       end
       alias :and_children :self_and_children
 
