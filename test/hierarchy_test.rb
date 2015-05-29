@@ -216,6 +216,17 @@ class HierarchyTest < MiniTest::Unit::TestCase
     assert_equal [child2, child3, grandchild1], root.descendents.leaves.order(:created_at).to_a
   end
 
+  def test_finds_all_leaves
+    root1 = TreeNode.create!
+    child1 = TreeNode.create!(parent: root1)
+    child2 = TreeNode.create!(parent: root1)
+    child3 = TreeNode.create!(parent: root1)
+    grandchild1 = TreeNode.create!(parent: child1)
+    root2 = TreeNode.create!
+
+    assert_equal [child2, child3, grandchild1, root2], TreeNode.leaves.order(:created_at).to_a
+  end
+
   def test_lowest_common_ancestor_paths
     root = TreeNode.create!
     child1 = TreeNode.create!(parent: root)
