@@ -75,8 +75,8 @@ Run migrations:
 - `#self_and_siblings`
 - `#children`
 - `#self_and_children`
-- `#descendents`
-- `#self_and_descendents`
+- `#descendants`
+- `#self_and_descendants`
 - `#leaves`
 
 ## TODO

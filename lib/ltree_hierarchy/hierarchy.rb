@@ -173,12 +173,23 @@ module Ltree
       end
       alias :and_siblings :self_and_siblings
 
-      def descendents
+      def descendants
         ltree_scope.where("#{ltree_path_column} <@ ? AND #{ltree_fragment_column} != ?", ltree_path, ltree_fragment)
       end
 
-      def self_and_descendents
+      def descendents
+        warn 'This method has been deprecated. Use #descendants instead'
+        descendants
+      end
+
+      def self_and_descendants
         ltree_scope.where("#{ltree_path_column} <@ ?", ltree_path)
+      end
+      alias :and_descendants :self_and_descendants
+
+      def self_and_descendents
+        warn 'This method has been deprecated. Use #self_and_descendants instead'
+        self_and_descendants
       end
       alias :and_descendents :self_and_descendents
 
@@ -192,7 +203,7 @@ module Ltree
       alias :and_children :self_and_children
 
       def leaves
-        descendents.leaves
+        descendants.leaves
       end
     end
   end

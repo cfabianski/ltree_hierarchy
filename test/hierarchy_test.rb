@@ -48,7 +48,7 @@ class HierarchyTest < MiniTest::Unit::TestCase
     assert_equal "#{root.fragment}.#{child.fragment}", child.materialized_path
   end
 
-  def test_cascades_path_changes_through_descendents
+  def test_cascades_path_changes_through_descendants
     acme_corp = TreeNode.create!
     uk = TreeNode.create!(parent: acme_corp)
     london = TreeNode.create!(parent: uk)
@@ -176,24 +176,24 @@ class HierarchyTest < MiniTest::Unit::TestCase
     assert_equal [root, child1, child2, child3], root.and_children.order(:created_at).to_a
   end
 
-  def test_finds_descendents
+  def test_finds_descendants
     root = TreeNode.create!
     child1 = TreeNode.create!(parent: root)
     child2 = TreeNode.create!(parent: root)
     child3 = TreeNode.create!(parent: root)
     grandchild1 = TreeNode.create!(parent: child1)
 
-    assert_equal [child1, child2, child3, grandchild1], root.descendents.order(:created_at).to_a
+    assert_equal [child1, child2, child3, grandchild1], root.descendants.order(:created_at).to_a
   end
 
-  def test_finds_self_and_descendents
+  def test_finds_self_and_descendants
     root = TreeNode.create!
     child1 = TreeNode.create!(parent: root)
     child2 = TreeNode.create!(parent: root)
     child3 = TreeNode.create!(parent: root)
     grandchild1 = TreeNode.create!(parent: child1)
 
-    assert_equal [root, child1, child2, child3, grandchild1], root.and_descendents.order(:created_at).to_a
+    assert_equal [root, child1, child2, child3, grandchild1], root.and_descendants.order(:created_at).to_a
   end
 
   def test_finds_nodes_at_depth
@@ -203,7 +203,7 @@ class HierarchyTest < MiniTest::Unit::TestCase
     child3 = TreeNode.create!(parent: root)
     grandchild1 = TreeNode.create!(parent: child1)
 
-    assert_equal [grandchild1], root.descendents.at_depth(3)
+    assert_equal [grandchild1], root.descendants.at_depth(3)
   end
 
   def test_finds_leaves
@@ -213,7 +213,7 @@ class HierarchyTest < MiniTest::Unit::TestCase
     child3 = TreeNode.create!(parent: root)
     grandchild1 = TreeNode.create!(parent: child1)
 
-    assert_equal [child2, child3, grandchild1], root.descendents.leaves.order(:created_at).to_a
+    assert_equal [child2, child3, grandchild1], root.descendants.leaves.order(:created_at).to_a
   end
 
   def test_finds_all_leaves
