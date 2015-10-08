@@ -1,4 +1,4 @@
-## unreleased
+## 0.0.8
 
 * fix spelling of `descendant` (deprecate `descendents` and `self_and_descendents` methods)
 
