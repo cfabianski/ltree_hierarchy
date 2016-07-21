@@ -26,18 +26,18 @@ module Ltree
     end
 
     def roots
-      where(ltree_parent_fragment_column => nil)
+      where("#{table_name}.#{ltree_parent_fragment_column}" => nil)
     end
 
     def at_depth(depth)
-      where(["NLEVEL(#{ltree_path_column}) = ?", depth])
+      where(["NLEVEL(#{table_name}.#{ltree_path_column}) = ?", depth])
     end
 
     def leaves
-      subquery = where("#{ltree_parent_fragment_column} IS NOT NULL")
-        .select("DISTINCT #{ltree_parent_fragment_column}")
+      subquery = where("#{table_name}.#{ltree_parent_fragment_column} IS NOT NULL")
+        .select("DISTINCT #{table_name}.#{ltree_parent_fragment_column}")
 
-      where("#{ltree_fragment_column} NOT IN(#{subquery.to_sql})")
+      where("#{table_name}.#{ltree_fragment_column} NOT IN(#{subquery.to_sql})")
     end
 
     def lowest_common_ancestor_paths(paths)
@@ -52,7 +52,7 @@ module Ltree
     end
 
     def lowest_common_ancestors(paths)
-      where(ltree_path_column => lowest_common_ancestor_paths(paths))
+      where("#{table_name}.#{ltree_path_column}" => lowest_common_ancestor_paths(paths))
     end
 
     module InstanceMethods
@@ -120,7 +120,7 @@ module Ltree
         #  SET    path = NEW.path || subpath(path, nlevel(OLD.path))
         #  WHERE  path <@ OLD.path AND id != NEW.id;
         ltree_scope.where(
-          ["#{ltree_path_column} <@ :old_path AND #{ltree_fragment_column} != :id", old_path: ltree_path_was, id: ltree_fragment]
+          ["#{ltree_scope.table_name}.#{ltree_path_column} <@ :old_path AND #{ltree_scope.table_name}.#{ltree_fragment_column} != :id", old_path: ltree_path_was, id: ltree_fragment]
         ).update_all(
           ["#{ltree_path_column} = :new_path || subpath(#{ltree_path_column}, nlevel(:old_path))", new_path: ltree_path, old_path: ltree_path_was]
         )
@@ -149,32 +149,32 @@ module Ltree
       end
 
       def root
-        ltree_scope.where("#{ltree_path_column} = SUBPATH(?, 0, 1)", ltree_path).first
+        ltree_scope.where("#{ltree_scope.table_name}.#{ltree_path_column} = SUBPATH(?, 0, 1)", ltree_path).first
       end
 
       def ancestors
-        ltree_scope.where("#{ltree_path_column} @> ? AND #{ltree_fragment_column} != ?", ltree_path, ltree_fragment)
+        ltree_scope.where("#{ltree_scope.table_name}.#{ltree_path_column} @> ? AND #{ltree_scope.table_name}.#{ltree_fragment_column} != ?", ltree_path, ltree_fragment)
       end
 
       def self_and_ancestors
-        ltree_scope.where("#{ltree_path_column} @> ?", ltree_path)
+        ltree_scope.where("#{ltree_scope.table_name}.#{ltree_path_column} @> ?", ltree_path)
       end
       alias :and_ancestors :self_and_ancestors
 
       def siblings
         ltree_scope.where(
-          "#{ltree_parent_fragment_column} = ? AND #{ltree_fragment_column} != ?",
+          "#{ltree_scope.table_name}.#{ltree_parent_fragment_column} = ? AND #{ltree_scope.table_name}.#{ltree_fragment_column} != ?",
           ltree_parent_fragment, ltree_fragment
         )
       end
 
       def self_and_siblings
-        ltree_scope.where(ltree_parent_fragment_column => ltree_parent_fragment)
+        ltree_scope.where("#{ltree_scope.table_name}.#{ltree_parent_fragment_column}" => ltree_parent_fragment)
       end
       alias :and_siblings :self_and_siblings
 
       def descendants
-        ltree_scope.where("#{ltree_path_column} <@ ? AND #{ltree_fragment_column} != ?", ltree_path, ltree_fragment)
+        ltree_scope.where("#{ltree_scope.table_name}.#{ltree_path_column} <@ ? AND #{ltree_scope.table_name}.#{ltree_fragment_column} != ?", ltree_path, ltree_fragment)
       end
 
       def descendents
@@ -183,7 +183,7 @@ module Ltree
       end
 
       def self_and_descendants
-        ltree_scope.where("#{ltree_path_column} <@ ?", ltree_path)
+        ltree_scope.where("#{ltree_scope.table_name}.#{ltree_path_column} <@ ?", ltree_path)
       end
       alias :and_descendants :self_and_descendants
 
@@ -194,11 +194,11 @@ module Ltree
       alias :and_descendents :self_and_descendents
 
       def children
-        ltree_scope.where(ltree_parent_fragment_column => ltree_fragment)
+        ltree_scope.where("#{ltree_scope.table_name}.#{ltree_parent_fragment_column}" => ltree_fragment)
       end
 
       def self_and_children
-        ltree_scope.where("#{ltree_fragment_column} = :id OR #{ltree_parent_fragment_column} = :id", id: ltree_fragment)
+        ltree_scope.where("#{ltree_scope.table_name}.#{ltree_fragment_column} = :id OR #{ltree_scope.table_name}.#{ltree_parent_fragment_column} = :id", id: ltree_fragment)
       end
       alias :and_children :self_and_children
 
