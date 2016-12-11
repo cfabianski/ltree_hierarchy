@@ -1,4 +1,4 @@
-test: 
+test:
   adapter:  postgresql
   host:     localhost
   database: ltree_hierarchy_test

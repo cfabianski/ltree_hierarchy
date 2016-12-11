@@ -1,0 +1,45 @@
+PATH
+  remote: ./../..
+  specs:
+    ltree_hierarchy (0.0.8)
+      activerecord (>= 3.1.0)
+      pg
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    activemodel (4.2.7.1)
+      activesupport (= 4.2.7.1)
+      builder (~> 3.1)
+    activerecord (4.2.7.1)
+      activemodel (= 4.2.7.1)
+      activesupport (= 4.2.7.1)
+      arel (~> 6.0)
+    activesupport (4.2.7.1)
+      i18n (~> 0.7)
+      json (~> 1.7, >= 1.7.7)
+      minitest (~> 5.1)
+      thread_safe (~> 0.3, >= 0.3.4)
+      tzinfo (~> 1.1)
+    arel (6.0.3)
+    builder (3.2.2)
+    i18n (0.7.0)
+    json (1.8.3)
+    minitest (5.10.1)
+    pg (0.19.0)
+    rake (12.0.0)
+    thread_safe (0.3.5)
+    tzinfo (1.2.2)
+      thread_safe (~> 0.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  activerecord (~> 4.2.0)
+  ltree_hierarchy!
+  minitest
+  rake
+
+BUNDLED WITH
+   1.13.6
