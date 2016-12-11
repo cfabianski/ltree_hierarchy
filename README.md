@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/cfabianski/ltree_hierarchy.svg?branch=master)](https://travis-ci.org/cfabianski/ltree_hierarchy)
+
 # Ltree Hierarchy
 
 A simplistic gem that allows ActiveRecord models to be organized in a tree or hierarchy. It uses a materialized path implementation based around PostgreSQL's [ltree](http://www.postgresql.org/docs/current/static/ltree.html) data type, associated functions and operators.

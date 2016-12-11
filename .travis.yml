@@ -1,3 +1,5 @@
+sudo: false
+
 language: ruby
 before_script:
   - cp test/database.ci.yml test/database.yml
