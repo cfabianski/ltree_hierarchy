@@ -1,3 +1,4 @@
+[![Gem Version](https://badge.fury.io/rb/ltree_hierarchy.svg)](https://badge.fury.io/rb/ltree_hierarchy)
 [![Build Status](https://travis-ci.org/cfabianski/ltree_hierarchy.svg?branch=master)](https://travis-ci.org/cfabianski/ltree_hierarchy)
 
 # Ltree Hierarchy
