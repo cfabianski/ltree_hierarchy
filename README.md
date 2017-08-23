@@ -67,7 +67,7 @@ Run migrations:
   subchild.root # => root
 ```
 
-- `.roots`
+- `.root`
 - `.leaves`
 - `.at_depth(n)`
 - `.lowest_common_ancestors(scope)`
