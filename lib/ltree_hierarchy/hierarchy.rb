@@ -15,7 +15,7 @@ module Ltree
       self.ltree_parent_fragment_column = options[:parent_fragment]
       self.ltree_path_column = options[:path]
 
-      belongs_to :parent, class_name: name, foreign_key: ltree_parent_fragment_column
+      belongs_to :parent, class_name: name, foreign_key: ltree_parent_fragment_column, primary_key: ltree_fragment_column
 
       validate :prevent_circular_paths, if: :ltree_parent_fragment_changed?
 
