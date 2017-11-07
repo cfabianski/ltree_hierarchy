@@ -4,7 +4,8 @@ module Ltree
       options = {
         fragment: :id,
         parent_fragment: :parent_id,
-        path: :path
+        path: :path,
+        optional: true
       }.merge(options)
 
       options.assert_valid_keys(:fragment, :parent_fragment, :path, :optional)
