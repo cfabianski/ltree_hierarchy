@@ -7,7 +7,7 @@ module Ltree
         path: :path
       }.merge(options)
 
-      options.assert_valid_keys(:fragment, :parent_fragment, :path)
+      options.assert_valid_keys(:fragment, :parent_fragment, :path, :optional)
 
       cattr_accessor :ltree_fragment_column, :ltree_parent_fragment_column, :ltree_path_column
 
