@@ -15,8 +15,14 @@ module Ltree
       self.ltree_parent_fragment_column = options[:parent_fragment]
       self.ltree_path_column = options[:path]
 
-      belongs_to :parent, class_name: name, foreign_key: ltree_parent_fragment_column, primary_key: ltree_fragment_column
+      belongs_to_parent_opts = {
+        class_name: name,
+        foreign_key: ltree_parent_fragment_column,
+        primary_key: ltree_fragment_column
+      }
+      belongs_to_parent_opts[:optional] = true if ActiveRecord::VERSION::MAJOR >= 5
 
+      belongs_to :parent, belongs_to_parent_opts
       validate :prevent_circular_paths, if: :ltree_parent_fragment_changed?
 
       after_create :commit_path
