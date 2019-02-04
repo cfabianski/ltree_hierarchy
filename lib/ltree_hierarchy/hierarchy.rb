@@ -20,7 +20,7 @@ module Ltree
         class_name: name,
         foreign_key: ltree_parent_fragment_column,
         primary_key: ltree_fragment_column,
-        optional = true
+        optional: true
       }
 
       belongs_to :parent, belongs_to_parent_opts
