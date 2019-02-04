@@ -18,9 +18,9 @@ Gem::Specification.new do |s|
   s.license = "MIT"
   s.require_paths = ["lib"]
 
-  s.add_dependency "pg"
+  s.add_dependency "pg", "~> 1.1.0"
 
-  s.add_dependency "activerecord", ">= 4.2.0"
+  s.add_dependency "activerecord", ">= 5.2.0"
 
   s.add_development_dependency "minitest"
   s.add_development_dependency "rake"
