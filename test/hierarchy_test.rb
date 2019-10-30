@@ -42,6 +42,11 @@ class HierarchyTest < MiniTest::Unit::TestCase
     assert_equal DefaultTreeNode.ltree_path_column, :path
   end
 
+  def test_add_a_root_node
+    root = TreeNode.create
+    assert root.persisted?
+  end
+
   def test_sets_path_upon_creation
     root = TreeNode.create!
     child = TreeNode.create!(parent: root)

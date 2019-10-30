@@ -4,10 +4,11 @@ module Ltree
       options = {
         fragment: :id,
         parent_fragment: :parent_id,
-        path: :path
+        path: :path,
+        optional: true
       }.merge(options)
 
-      options.assert_valid_keys(:fragment, :parent_fragment, :path)
+      options.assert_valid_keys(:fragment, :parent_fragment, :path, :optional)
 
       cattr_accessor :ltree_fragment_column, :ltree_parent_fragment_column, :ltree_path_column
 
@@ -18,9 +19,9 @@ module Ltree
       belongs_to_parent_opts = {
         class_name: name,
         foreign_key: ltree_parent_fragment_column,
-        primary_key: ltree_fragment_column
+        primary_key: ltree_fragment_column,
+        optional: true
       }
-      belongs_to_parent_opts[:optional] = true if ActiveRecord::VERSION::MAJOR >= 5
 
       belongs_to :parent, belongs_to_parent_opts
       validate :prevent_circular_paths, if: :ltree_parent_fragment_changed?

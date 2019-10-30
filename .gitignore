@@ -1,5 +1,7 @@
 *.gem
 .bundle
+.ruby-gemset
+.ruby-version
 Gemfile.lock
 pkg/*
 test/coverage
