@@ -11,8 +11,6 @@ Gem::Specification.new do |s|
   s.summary = "Organize ActiveRecord models into a tree using PostgreSQL's ltree datatype"
   s.description = "Organizes ActiveRecord models into a tree/hierarchy using a materialized path implementation based around PostgreSQL's ltree datatype. ltree's operators ensure that queries are fast and easily understood."
 
-  s.rubyforge_project = "ltree_hierarchy"
-
   s.files = Dir["{lib/**/*,[A-Z]*}"]
   s.platform = Gem::Platform::RUBY
   s.license = "MIT"
