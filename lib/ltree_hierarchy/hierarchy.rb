@@ -29,37 +29,40 @@ module Ltree
       after_create :commit_path
       before_update :assign_path, :cascade_path_change, if: :ltree_parent_fragment_changed?
 
+      extend ClassMethods
       include InstanceMethods
     end
 
-    def roots
-      where("#{table_name}.#{ltree_parent_fragment_column}" => nil)
-    end
-
-    def at_depth(depth)
-      where(["NLEVEL(#{table_name}.#{ltree_path_column}) = ?", depth])
-    end
-
-    def leaves
-      subquery = where("#{table_name}.#{ltree_parent_fragment_column} IS NOT NULL")
-        .select("DISTINCT #{table_name}.#{ltree_parent_fragment_column}")
-
-      where("#{table_name}.#{ltree_fragment_column} NOT IN(#{subquery.to_sql})")
-    end
-
-    def lowest_common_ancestor_paths(paths)
-      sql = if paths.respond_to?(:to_sql)
-        "SELECT LCA(ARRAY(#{paths.to_sql}))"
-      else
-        return [] if paths.empty?
-        safe_paths = paths.map { |p| "#{connection.quote(p)}::ltree" }
-        "SELECT LCA(ARRAY[#{safe_paths.join(", ")}])"
+    module ClassMethods
+      def roots
+        where("#{table_name}.#{ltree_parent_fragment_column}" => nil)
       end
-      connection.select_values(sql)
-    end
 
-    def lowest_common_ancestors(paths)
-      where("#{table_name}.#{ltree_path_column}" => lowest_common_ancestor_paths(paths))
+      def at_depth(depth)
+        where(["NLEVEL(#{table_name}.#{ltree_path_column}) = ?", depth])
+      end
+
+      def leaves
+        subquery = where("#{table_name}.#{ltree_parent_fragment_column} IS NOT NULL")
+          .select("DISTINCT #{table_name}.#{ltree_parent_fragment_column}")
+
+        where("#{table_name}.#{ltree_fragment_column} NOT IN(#{subquery.to_sql})")
+      end
+
+      def lowest_common_ancestor_paths(paths)
+        sql = if paths.respond_to?(:to_sql)
+          "SELECT LCA(ARRAY(#{paths.to_sql}))"
+        else
+          return [] if paths.empty?
+          safe_paths = paths.map { |p| "#{connection.quote(p)}::ltree" }
+          "SELECT LCA(ARRAY[#{safe_paths.join(", ")}])"
+        end
+        connection.select_values(sql)
+      end
+
+      def lowest_common_ancestors(paths)
+        where("#{table_name}.#{ltree_path_column}" => lowest_common_ancestor_paths(paths))
+      end
     end
 
     module InstanceMethods
