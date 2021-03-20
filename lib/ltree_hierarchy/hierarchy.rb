@@ -23,7 +23,7 @@ module Ltree
         optional: true
       }
 
-      belongs_to :parent, belongs_to_parent_opts
+      belongs_to :parent, **belongs_to_parent_opts
       validate :prevent_circular_paths, if: :ltree_parent_fragment_changed?
 
       after_create :commit_path

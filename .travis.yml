@@ -1,6 +1,7 @@
 sudo: false
-
 language: ruby
+services:
+  - postgresql
 before_script:
   - cp test/database.ci.yml test/database.yml
   - psql -c 'CREATE DATABASE ltree_hierarchy_test;' -U postgres
